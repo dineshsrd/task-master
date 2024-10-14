@@ -1,0 +1,48 @@
+package com.taskmaster.service;
+
+import java.util.logging.Logger;
+
+import org.springframework.stereotype.Service;
+
+import com.taskmaster.entity.Role;
+import com.taskmaster.entity.Status;
+import com.taskmaster.repository.RoleRepository;
+import com.taskmaster.repository.StatusRepository;
+
+import jakarta.annotation.PostConstruct;
+
+@Service
+public class DefaultService {
+    private static final Logger LOGGER = Logger.getLogger(DefaultService.class.getName());
+
+    private final RoleRepository _roleRepository;
+    private final StatusRepository _statusRepository;
+
+    public DefaultService(RoleRepository roleRepository, StatusRepository statusRepository) {
+        this._roleRepository = roleRepository;
+        this._statusRepository = statusRepository;
+    }
+
+    @PostConstruct
+    public void addRoles() {
+        if (_roleRepository.count() == 0) {
+            _roleRepository.save(new Role(1L, "ROLE_USER", "User"));
+            _roleRepository.save(new Role(2L, "ROLE_ADMIN", "Admin"));
+            LOGGER.info("Roles added successfully");
+        } else {
+            LOGGER.info("Roles already exist");
+        }
+    }
+
+    @PostConstruct
+    public void addStatuses() {
+        if (_statusRepository.count() == 0) {
+            _statusRepository.save(new Status(1L, "open", "Open", true));
+            _statusRepository.save(new Status(2L, "in_progress", "In Progress", true));
+            _statusRepository.save(new Status(3L, "closed", "Closed", true));
+            LOGGER.info("Statuses added successfully");
+        } else {
+            LOGGER.info("Statuses already exist");
+        }
+    }
+}
