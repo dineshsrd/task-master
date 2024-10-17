@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.taskmaster.model.LoginModel;
 import com.taskmaster.model.UserModel;
 import com.taskmaster.repository.UserRepository;
 
@@ -21,7 +22,7 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public UserDetails authenticate(UserModel input) throws Exception {
+    public UserDetails authenticate(LoginModel input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),

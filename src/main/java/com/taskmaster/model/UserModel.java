@@ -22,7 +22,7 @@ public class UserModel {
     private String password;
     private String designation;
     private String company;
-    private List<String> roles;
+    private int role_id;
 
     @Override
     public String toString() {

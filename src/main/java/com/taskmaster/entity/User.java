@@ -1,26 +1,21 @@
 package com.taskmaster.entity;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.taskmaster.exception.UserLevelException;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,27 +32,33 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First name is mandatory")
-    private String first_name;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)  // Application-level role
+    private Role applicationRole;
 
-    @NotBlank(message = "Last name is mandatory")
-    private String last_name;
+    @Column(name = "created_at", nullable = false)
+    private Long createdAt;
 
-    @NotBlank(message = "Email is mandatory")
-    @Email
+    @Column(name = "updated_at")
+    private Long updatedAt;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message = "Password is mandatory")
-    @NotEmpty
+    @Column(name = "password", nullable = false)
     private String password;
 
-    private long created_at;
-    private long updated_at;
+    @Column(name = "designation")
     private String designation;
-    private String company;
 
-    @ManyToMany(mappedBy = "_users", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Project> _projects = new HashSet<>();
+    @Column(name = "company")
+    private String company;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -95,23 +96,5 @@ public class User implements UserDetails {
 
     public UserDetails orElseThrow() throws UserLevelException {
         throw new UserLevelException("User not found");
-    }
-
-    public Set<Project> get_projects() {
-        return _projects;
-    }
-
-    public void set_projects(Set<Project> projects) {
-        this._projects = projects;
-    }
-
-    public void addProject(Project project) {
-        this._projects.add(project);
-        project.get_users().add(this);
-    }
-
-    public void removeProject(Project project) {
-        this._projects.remove(project);
-        project.get_users().remove(this);
     }
 }

@@ -1,17 +1,10 @@
 package com.taskmaster.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,36 +19,25 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private long created_at;
-    private long updated_at;
+
+    @Column(name = "created_at", nullable = false)
+    private Long createdAt;
+
+    @Column(name = "updated_at")
+    private Long updatedAt;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "key", nullable = false)
     private String key;
+
+    @Column(name = "url")
     private String url;
+
+    @Column(name = "description")
     private String description;
-    private boolean is_active;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "project_users", // name of the join table
-            joinColumns = @JoinColumn(name = "project_id"), // foreign key in join table to Project
-            inverseJoinColumns = @JoinColumn(name = "user_id") // foreign key in join table to User
-    )
-    private Set<User> _users = new HashSet<>();
 
-    public Set<User> get_users() {
-        return _users;
-    }
-
-    public void set_users(Set<User> users) {
-        this._users = users;
-    }
-
-    public void addUser(User user) {
-        this._users.add(user);
-        user.get_projects().add(this);
-    }
-
-    public void removeUser(User user) {
-        this._users.remove(user);
-        user.get_projects().remove(this);
-    }
+    @Column(name = "is_active")
+    private Boolean isActive;
 }

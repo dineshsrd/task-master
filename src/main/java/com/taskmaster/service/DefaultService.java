@@ -4,10 +4,13 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import com.taskmaster.entity.Project;
 import com.taskmaster.entity.Role;
 import com.taskmaster.entity.Status;
+import com.taskmaster.repository.ProjectRepository;
 import com.taskmaster.repository.RoleRepository;
 import com.taskmaster.repository.StatusRepository;
+import com.taskmaster.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
 
@@ -17,10 +20,14 @@ public class DefaultService {
 
     private final RoleRepository _roleRepository;
     private final StatusRepository _statusRepository;
+    private final ProjectRepository _projectRepository;
+    private final UserRepository _userRepository;
 
-    public DefaultService(RoleRepository roleRepository, StatusRepository statusRepository) {
+    public DefaultService(RoleRepository roleRepository, StatusRepository statusRepository, ProjectRepository _projectRepository, UserRepository _userRepository) {
         this._roleRepository = roleRepository;
         this._statusRepository = statusRepository;
+        this._projectRepository = _projectRepository;
+        this._userRepository = _userRepository;
     }
 
     @PostConstruct
@@ -45,4 +52,30 @@ public class DefaultService {
             LOGGER.info("Statuses already exist");
         }
     }
+
+    @PostConstruct
+    public void addProjects() {
+        if (_projectRepository.count() == 0) {
+            Project pro1 = new Project();
+            pro1.setName("Project 1");
+            pro1.setKey("PROJ1");
+            pro1.setDescription("Project 1 description");
+            pro1.setCreatedAt(System.currentTimeMillis());
+            pro1.setIsActive(true);
+            _projectRepository.save(pro1);
+
+            pro1 = new Project();
+            pro1.setName("Project 2");
+            pro1.setKey("PROJ2");
+            pro1.setDescription("Project 2 description");
+            pro1.setCreatedAt(System.currentTimeMillis());
+            pro1.setIsActive(true);
+            _projectRepository.save(pro1);
+
+            LOGGER.info("Projects added successfully");
+        } else {
+            LOGGER.info("Projects already exist");
+        }
+    }
+
 }

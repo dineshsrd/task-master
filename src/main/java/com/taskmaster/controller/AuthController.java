@@ -1,5 +1,7 @@
 package com.taskmaster.controller;
 
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taskmaster.entity.User;
+import com.taskmaster.model.LoginModel;
 import com.taskmaster.model.LoginResponseModel;
 import com.taskmaster.model.ResponseModel;
 import com.taskmaster.model.UserModel;
@@ -21,6 +25,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger LOGGER = Logger.getLogger(AuthController.class.getName());
 
     @Autowired
     private UserService _userService;
@@ -49,11 +55,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseModel> authenticate(@RequestBody UserModel loginUserDto) {
+    public ResponseEntity<ResponseModel> authenticate(@RequestBody LoginModel loginUserDto) {
         ResponseModel response = new ResponseModel();
         try{
             UserDetails authenticatedUser = _authenticationService.authenticate(loginUserDto);
-            System.out.println(authenticatedUser);
+            User user = (User) authenticatedUser;
+            LOGGER.info("User authenticated successfully. Username: " + user.getId());
             String jwtToken = _jwtService.generateToken(authenticatedUser);
             LoginResponseModel loginResponse = new LoginResponseModel();
             loginResponse.setToken(jwtToken);
@@ -63,7 +70,7 @@ public class AuthController {
             response.setData(loginResponse);
             return new ResponseEntity<>(response, response.getStatus());
         }catch (Exception ex){
-            ex.printStackTrace();
+            LOGGER.severe(ex.getMessage());
             response.setMessage(ex.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED);
             response.setData(null);

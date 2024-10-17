@@ -1,5 +1,6 @@
 package com.taskmaster.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,8 +18,12 @@ import lombok.Setter;
 public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "name")
     private String name;
-    private String display_name;
-    private boolean is_default;
+    @Column(name = "display_name")
+    private String displayName;
+    @Column(name = "is_default")
+    private boolean isDefault;
 }
