@@ -11,7 +11,7 @@ import com.taskmaster.repository.ProjectRepository;
 import com.taskmaster.repository.ProjectUserRoleRepository;
 import com.taskmaster.repository.RoleRepository;
 import com.taskmaster.repository.UserRepository;
-import com.taskmaster.util.ProjectUserRoleId;
+import com.taskmaster.util.project.ProjectUserRoleId;
 
 @Service
 public class ProjectUserRoleService {

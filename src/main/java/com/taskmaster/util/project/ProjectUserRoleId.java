@@ -1,4 +1,4 @@
-package com.taskmaster.util;
+package com.taskmaster.util.project;
 
 import java.io.Serializable;
 import jakarta.persistence.Embeddable;

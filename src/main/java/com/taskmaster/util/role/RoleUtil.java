@@ -1,4 +1,4 @@
-package com.taskmaster.util;
+package com.taskmaster.util.role;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

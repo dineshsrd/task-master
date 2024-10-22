@@ -1,4 +1,4 @@
-package com.taskmaster.util;
+package com.taskmaster.util.comment;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -18,7 +18,7 @@ import com.taskmaster.repository.RoleRepository;
 import com.taskmaster.repository.StatusRepository;
 import com.taskmaster.repository.TaskRepository;
 import com.taskmaster.repository.UserRepository;
-import com.taskmaster.util.ProjectUserRoleId;
+import com.taskmaster.util.project.ProjectUserRoleId;
 import com.taskmaster.enums.RoleEnum;
 
 import jakarta.annotation.PostConstruct;

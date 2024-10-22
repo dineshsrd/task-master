@@ -3,7 +3,7 @@ package com.taskmaster.entity;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.taskmaster.util.ProjectUserRoleId;
+import com.taskmaster.util.project.ProjectUserRoleId;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

@@ -23,7 +23,7 @@ import com.taskmaster.model.ResponseModel;
 import com.taskmaster.model.UserModel;
 import com.taskmaster.repository.RoleRepository;
 import com.taskmaster.repository.UserRepository;
-import com.taskmaster.util.RoleUtil;
+import com.taskmaster.util.role.RoleUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
