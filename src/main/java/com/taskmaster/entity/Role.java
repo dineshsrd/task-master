@@ -1,5 +1,7 @@
 package com.taskmaster.entity;
 
+import com.taskmaster.enums.RoleEnum;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,10 +24,13 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
-    private String title;  // For example, "Application Admin", "Project Admin", "Project Member"
+    @Column(name = "name", nullable = false)
+    private RoleEnum name;
 
     @Column(name = "display_name", nullable = false)
     private String display_name;
+
+    @Column(name = "is_project_level", nullable = false)
+    private boolean isProjectLevel;
 
 }

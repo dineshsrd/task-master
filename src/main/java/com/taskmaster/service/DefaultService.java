@@ -2,17 +2,27 @@ package com.taskmaster.service;
 
 import java.util.logging.Logger;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.taskmaster.entity.Project;
+import com.taskmaster.entity.ProjectUserRole;
 import com.taskmaster.entity.Role;
 import com.taskmaster.entity.Status;
+import com.taskmaster.entity.Task;
+import com.taskmaster.entity.User;
+import com.taskmaster.enums.StatusEnum;
 import com.taskmaster.repository.ProjectRepository;
+import com.taskmaster.repository.ProjectUserRoleRepository;
 import com.taskmaster.repository.RoleRepository;
 import com.taskmaster.repository.StatusRepository;
+import com.taskmaster.repository.TaskRepository;
 import com.taskmaster.repository.UserRepository;
+import com.taskmaster.util.ProjectUserRoleId;
+import com.taskmaster.enums.RoleEnum;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 
 @Service
 public class DefaultService {
@@ -22,38 +32,56 @@ public class DefaultService {
     private final StatusRepository _statusRepository;
     private final ProjectRepository _projectRepository;
     private final UserRepository _userRepository;
+    private final TaskRepository _taskRepository;
+    private final ProjectUserRoleRepository _projectUserRoleRepository;
+    private final PasswordEncoder _passwordEncoder;
 
-    public DefaultService(RoleRepository roleRepository, StatusRepository statusRepository, ProjectRepository _projectRepository, UserRepository _userRepository) {
+    public DefaultService(RoleRepository roleRepository, StatusRepository statusRepository, ProjectRepository _projectRepository, UserRepository _userRepository, TaskRepository _taskRepository, ProjectUserRoleRepository _projectUserRoleRepository, PasswordEncoder _passwordEncoder) {
         this._roleRepository = roleRepository;
         this._statusRepository = statusRepository;
         this._projectRepository = _projectRepository;
         this._userRepository = _userRepository;
+        this._taskRepository = _taskRepository;
+        this._projectUserRoleRepository = _projectUserRoleRepository;
+        this._passwordEncoder = _passwordEncoder;
     }
 
     @PostConstruct
+    public void initDefaultData() {
+        addRoles();
+        addProjects();
+        addStatuses();
+        addUsers();
+        addUsersToProject();
+    }
+
+    @Transactional
     public void addRoles() {
         if (_roleRepository.count() == 0) {
-            _roleRepository.save(new Role(1L, "ROLE_USER", "User"));
-            _roleRepository.save(new Role(2L, "ROLE_ADMIN", "Admin"));
+            _roleRepository.save(new Role(1L, RoleEnum.ROLE_USER, "User", false));
+            _roleRepository.save(new Role(2L, RoleEnum.ROLE_ADMIN, "Admin", false));
+            _roleRepository.save(new Role(3L, RoleEnum.ROLE_PROJECT_ADMIN, "Owner", true));
+            _roleRepository.save(new Role(4L, RoleEnum.ROLE_PROJECT_MANAGER, "Manager", true));
+            _roleRepository.save(new Role(5L, RoleEnum.ROLE_PROJECT_USER, "Developer", true));
             LOGGER.info("Roles added successfully");
         } else {
             LOGGER.info("Roles already exist");
         }
     }
 
-    @PostConstruct
+    @Transactional
     public void addStatuses() {
         if (_statusRepository.count() == 0) {
-            _statusRepository.save(new Status(1L, "open", "Open", true));
-            _statusRepository.save(new Status(2L, "in_progress", "In Progress", true));
-            _statusRepository.save(new Status(3L, "closed", "Closed", true));
+            _statusRepository.save(new Status(1L, StatusEnum.OPEN, "Open", true, null));
+            _statusRepository.save(new Status(2L, StatusEnum.IN_PROGRESS, "In Progress", true, null));
+            _statusRepository.save(new Status(3L, StatusEnum.CLOSED, "Closed", true, null));
             LOGGER.info("Statuses added successfully");
         } else {
             LOGGER.info("Statuses already exist");
         }
     }
 
-    @PostConstruct
+    @Transactional
     public void addProjects() {
         if (_projectRepository.count() == 0) {
             Project pro1 = new Project();
@@ -75,6 +103,61 @@ public class DefaultService {
             LOGGER.info("Projects added successfully");
         } else {
             LOGGER.info("Projects already exist");
+        }
+    }
+
+    @Transactional
+    public void addUsers() {
+        if (_userRepository.count() == 0) {
+            LOGGER.info("Adding users");
+            User newUser = new User();
+            newUser.setCreatedAt(System.currentTimeMillis());
+            newUser.setFirstName("John");
+            newUser.setLastName("Doe");
+            newUser.setEmail("johndoe@gmail.com");
+            newUser.setPassword(_passwordEncoder.encode("Test@123"));
+            newUser.setApplicationRole(_roleRepository.findById(2L).get());
+            _userRepository.save(newUser);
+            LOGGER.info("Users added successfully");
+        }
+    }
+
+    @Transactional
+    public void addUsersToProject() {
+        if (_projectRepository.count() > 0) {
+            User user = _userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
+            Project project = _projectRepository.findById(1L).orElseThrow(() -> new RuntimeException("Project not found"));
+            Role role = _roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Role not found"));
+
+            ProjectUserRoleId projectUserRoleId = new ProjectUserRoleId(1L, 1L, 3L);
+
+            ProjectUserRole projectUserRole = new ProjectUserRole(projectUserRoleId, project, user, role);
+            _projectUserRoleRepository.save(projectUserRole);
+            LOGGER.info("Users added to project successfully");
+        } else {
+            LOGGER.info("Project does not exist");
+        }
+    }
+
+    @Transactional
+    public void addTasks() {
+        if (_taskRepository.count() == 0) {
+            LOGGER.info("Adding tasks");
+            Task task = new Task();
+            task.setCreatedAt(System.currentTimeMillis());
+            task.setSummary("Task 1");
+            task.setDescription("Task 1 description");
+            task.setDueDate(System.currentTimeMillis() + 864000L);
+            Project project = _projectRepository.findById(1L).orElseThrow(() -> new RuntimeException("Project not found"));
+            task.setProject(project);
+            Status status = _statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Status not found"));
+            task.setStatus(status);
+            User user = _userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
+            task.setCreatedBy(user);
+            _taskRepository.save(task);
+            LOGGER.info("Tasks added successfully");
+        } else {
+            LOGGER.info("Tasks already exist");
         }
     }
 

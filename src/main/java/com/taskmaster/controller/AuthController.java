@@ -18,6 +18,7 @@ import com.taskmaster.model.ResponseModel;
 import com.taskmaster.model.UserModel;
 import com.taskmaster.service.AuthService;
 import com.taskmaster.service.JwtService;
+import com.taskmaster.service.ProjectUserRoleService;
 import com.taskmaster.service.UserService;
 
 import jakarta.validation.Valid;
@@ -36,6 +37,9 @@ public class AuthController {
 
     @Autowired
     private AuthService _authenticationService;
+
+    @Autowired
+    private ProjectUserRoleService _projectUserRoleService;
 
     public AuthController(JwtService jwtService, AuthService authenticationService) {
         this._jwtService = jwtService;
@@ -57,6 +61,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ResponseModel> authenticate(@RequestBody LoginModel loginUserDto) {
         ResponseModel response = new ResponseModel();
+        System.out.println(loginUserDto.getEmail());
+        System.out.println(loginUserDto.getPassword());
         try{
             UserDetails authenticatedUser = _authenticationService.authenticate(loginUserDto);
             User user = (User) authenticatedUser;
@@ -68,6 +74,7 @@ public class AuthController {
             response.setMessage("Login successful!");
             response.setStatus(HttpStatus.OK);
             response.setData(loginResponse);
+            _projectUserRoleService.assignUserToProject(user.getId(), 1L, 3L);
             return new ResponseEntity<>(response, response.getStatus());
         }catch (Exception ex){
             LOGGER.severe(ex.getMessage());

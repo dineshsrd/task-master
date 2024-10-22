@@ -1,0 +1,119 @@
+Table "comment" {
+  "id" int8 [pk, not null, increment]
+  "task_id" int8
+  "user_id" int8
+}
+
+Table "comment_history" {
+  "id" int8 [pk, not null, increment]
+  "comment_string" varchar(255)
+  "created_at" int8
+  "is_edited" bool
+  "comment_id" int8
+  "user_id" int8
+}
+
+Table "project" {
+  "id" int8 [pk, not null, increment]
+  "created_at" int8 [not null]
+  "description" varchar(255)
+  "is_active" bool
+  "key" varchar(255) [not null]
+  "name" varchar(255) [not null]
+  "updated_at" int8
+  "url" varchar(255)
+}
+
+Table "project_user_roles" {
+  "project_id" int8 [not null]
+  "role_id" int8 [not null]
+  "user_id" int8 [not null]
+
+  Indexes {
+    (project_id, role_id, user_id) [type: btree, name: "project_user_roles_pkey"]
+  }
+}
+
+Table "roles" {
+  "id" int8 [pk, not null, increment]
+  "display_name" varchar(255) [not null]
+  "is_project_level" bool [not null]
+  "name" int2 [not null]
+}
+
+Table "status" {
+  "id" int8 [pk, not null, increment]
+  "display_name" varchar(255)
+  "is_default" bool
+  "name" int2
+}
+
+Table "task" {
+  "id" int8 [pk, not null, increment]
+  "created_at" int8 [not null]
+  "description" varchar(255)
+  "due_date" int8
+  "summary" varchar(255) [not null]
+  "updated_at" int8
+  "assigned_to" int8
+  "created_by" int8 [not null]
+  "project_id" int8 [not null]
+  "status_id" int8 [not null]
+}
+
+Table "task_history" {
+  "id" int8 [pk, not null, increment]
+  "created_at" int8
+  "field_display_name" varchar(255)
+  "field_name" varchar(255)
+  "from_value" varchar(255)
+  "to_value" varchar(255)
+  "user_id" int8
+  "task_id" int8
+}
+
+Table "users" {
+  "id" int8 [pk, not null, increment]
+  "company" varchar(255)
+  "created_at" int8 [not null]
+  "designation" varchar(255)
+  "email" varchar(255) [unique, not null]
+  "first_name" varchar(255) [not null]
+  "last_name" varchar(255) [not null]
+  "password" varchar(255) [not null]
+  "updated_at" int8
+  "role_id" int8 [not null]
+}
+
+Ref "fkfknte4fhjhet3l1802m1yqa50":"task"."id" < "comment"."task_id"
+
+Ref "fkqm52p1v3o13hy268he0wcngr5":"users"."id" < "comment"."user_id"
+
+Ref "fkhpo5mevyjfgbwnd1kld4bk0jy":"comment"."id" < "comment_history"."comment_id"
+
+Ref "fklfmd5815acx89w92fo8l64x0b":"users"."id" < "comment_history"."user_id"
+
+Ref "fk12u4mwmc46n6so8179ldbegmk":"users"."id" < "project_user_roles"."user_id"
+
+Ref "fkhu1s3n7ysodfg3ar75uweusmv":"project"."id" < "project_user_roles"."project_id"
+
+Ref "fkq5631yod9d7jppwgbc2djtgn2":"roles"."id" < "project_user_roles"."role_id"
+
+Ref "fk4amgamieqvrq9ej2wy2oe6878":"users"."id" < "task"."assigned_to"
+
+Ref "fk9amdidv53i0hvjvnxkrup18t4":"status"."id" < "task"."status_id"
+
+Ref "fkk8nrkp4yt9grmah1dv5t9830m":"users"."id" < "task"."created_by"
+
+Ref "fkk8qrwowg31kx7hp93sru1pdqa":"project"."id" < "task"."project_id"
+
+Ref "fker57q2libi1e9njpj6faoxd2i":"task"."id" < "task_history"."task_id"
+
+Ref "fkvws0ackho5jjqad4sfy8e0tk":"users"."id" < "task_history"."user_id"
+
+Ref "fkp56c1712k691lhsyewcssf40f":"roles"."id" < "users"."role_id"
+
+Table "tasks"."sample" {
+  "uuid" int8 [pk, not null]
+  "name" varchar(256) [not null]
+}

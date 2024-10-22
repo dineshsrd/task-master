@@ -16,13 +16,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Data
 public class UserModel {
+    private Long user_id;
     private String first_name;
     private String last_name;
     private String email;
     private String password;
     private String designation;
     private String company;
-    private int role_id;
+    private Long role_id;
 
     @Override
     public String toString() {

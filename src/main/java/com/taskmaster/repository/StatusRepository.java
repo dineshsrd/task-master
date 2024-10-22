@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.taskmaster.entity.Status;
 
 @Repository
-public interface StatusRepository extends JpaRepository<Status, Integer> {
+public interface StatusRepository extends JpaRepository<Status, Long> {
 }

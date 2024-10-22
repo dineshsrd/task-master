@@ -1,8 +1,8 @@
-package com.taskmaster.constants;
+package com.taskmaster.constant;
 
 import org.springframework.beans.factory.annotation.Value;
 
-public class AppConstants {
+public class AppConstant {
 
     public static final String BASE_URL = "https://gnews.io/api/v4/";
     @Value("${security.api_key}")

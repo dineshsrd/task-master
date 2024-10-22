@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.taskmaster.model.LoginModel;
-import com.taskmaster.model.UserModel;
 import com.taskmaster.repository.UserRepository;
 
 @Service
@@ -23,14 +22,8 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
 
     public UserDetails authenticate(LoginModel input) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
-                        input.getPassword()
-                )
-        );
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(input.getEmail(), input.getPassword()));
 
-        return _userRepository.findByEmail(input.getEmail())
-                .orElseThrow();
+        return _userRepository.findByEmail(input.getEmail()).orElseThrow();
     }
 }
