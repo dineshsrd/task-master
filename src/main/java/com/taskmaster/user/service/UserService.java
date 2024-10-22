@@ -36,7 +36,7 @@ public class UserService {
     private PasswordEncoder _passwordEncoder;
     private RoleRepository _roleRepository;
 
-    private UserService(@Autowired UserRepository userRepository, @Autowired PasswordEncoder passwordEncoder, @Autowired RoleRepository roleRepository) {
+    public UserService(@Autowired UserRepository userRepository, @Autowired PasswordEncoder passwordEncoder, @Autowired RoleRepository roleRepository) {
         this._userRepository = userRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleRepository = roleRepository;
