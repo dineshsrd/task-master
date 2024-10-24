@@ -1,56 +1,39 @@
 package com.taskmaster.task.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.taskmaster.project.entity.Project;
-import com.taskmaster.status.entity.Status;
-import com.taskmaster.task.entity.Task;
-import com.taskmaster.user.entity.User;
 import com.taskmaster.project.repository.ProjectRepository;
+import com.taskmaster.shared.model.response.ResponseModel;
 import com.taskmaster.status.repository.StatusRepository;
+import com.taskmaster.task.model.TaskModel;
 import com.taskmaster.task.repository.TaskRepository;
 import com.taskmaster.user.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private TaskRepository _taskRepository;
+    private ProjectRepository _projectRepository;
+    private UserRepository _userRepository;
+    private StatusRepository _statusRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository, StatusRepository statusRepository) {
+        this._taskRepository = taskRepository;
+        this._projectRepository = projectRepository;
+        this._userRepository = userRepository;
+        this._statusRepository = statusRepository;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    public ResponseEntity<ResponseModel> createTask(TaskModel taskModel, HttpServletRequest request) {
+        try {
 
-    @Autowired
-    private StatusRepository statusRepository;
-
-    @Transactional
-    public Task createTask(String title, String description, Long projectId, Long creatorId, Long assigneeId, Long statusId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        User creator = userRepository.findById(creatorId)
-                .orElseThrow(() -> new RuntimeException("User (creator) not found"));
-
-        User assignee = userRepository.findById(assigneeId)
-                .orElseThrow(() -> new RuntimeException("User (assignee) not found"));
-
-        Status status = statusRepository.findById(statusId)
-                .orElseThrow(() -> new RuntimeException("Status not found"));
-
-        Task task = new Task();
-        task.setSummary(title);
-        task.setDescription(description);
-        task.setProject(project);
-        task.setCreatedBy(creator);
-        task.setAssignedTo(assignee);
-        task.setStatus(status);
-        return taskRepository.save(task);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return null;
     }
 }
 

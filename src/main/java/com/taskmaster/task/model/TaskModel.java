@@ -1,5 +1,11 @@
 package com.taskmaster.task.model;
 
+import com.taskmaster.project.entity.Project;
+import com.taskmaster.status.entity.Status;
+import com.taskmaster.user.entity.User;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,13 +19,24 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TaskModel {
     private Long taskId;
-    private String title;
+
+    @NotBlank(message = "Summary is mandatory")
+    @Size(min = 3, max = 100, message = "Task Summary must be between 3 minimum characters")
+    private String summary;
+
     private String description;
+
     private String dueDate;
-    private Long userId;
-    private Long statusId;
-    private Long projectId;
+
+    private User createdBy;
+
+    private Status status;
+
+    private Project project;
+
     private String createdAt;
+
     private String updatedAt;
 
+    private User assignedTo;
 }

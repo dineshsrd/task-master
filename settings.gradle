@@ -1,2 +1,3 @@
 rootProject.name = 'task-master'
+include 'mooc'
 
