@@ -1,5 +1,8 @@
 package com.taskmaster.task.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,6 +85,33 @@ public class TaskController {
         ResponseModel response = new ResponseModel();
         try {
             return _taskService.fetchUserTasks(userId);
+        } catch (Exception ex) {
+            response.setMessage(ex.getMessage());
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ResponseModel> fetchTasksByStatus(@RequestBody StatusDTO status) {
+        ResponseModel response = new ResponseModel();
+        try {
+            return _taskService.fetchTaskByStatus(status);
+        } catch (Exception ex) {
+            response.setMessage(ex.getMessage());
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseModel> search(@RequestBody TaskRequestDTO taskDto) {
+        ResponseModel response = new ResponseModel();
+        try {
+            List<String> searchKeys = new ArrayList<>();
+            searchKeys.add(taskDto.getSummary()==null?"":taskDto.getSummary());
+            searchKeys.add(taskDto.getDescription()==null?"":taskDto.getDescription());
+            return _taskService.search(searchKeys);
         } catch (Exception ex) {
             response.setMessage(ex.getMessage());
             response.setStatus(HttpStatus.BAD_REQUEST);

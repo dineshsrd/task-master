@@ -3,7 +3,7 @@
 package com.taskmaster.user.service;
 
 import java.security.Principal;
-import java.util.logging.Logger;
+import java.sql.Timestamp;import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +61,7 @@ public class UserService {
             taskMasterUser.setPassword(_passwordEncoder.encode(user.getPassword()));
             taskMasterUser.setCompany(user.getCompany());
             taskMasterUser.setDesignation(user.getDesignation());
-            taskMasterUser.setCreatedAt(System.currentTimeMillis());
+            taskMasterUser.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             taskMasterUser.setUpdatedAt(null);
             taskMasterUser.setApplicationRole(_roleRepository.findById(user.getRole_id()).orElseThrow());
 
@@ -123,6 +123,7 @@ public class UserService {
                 fetchedUser.setLastName(user.getLast_name());
                 fetchedUser.setCompany(user.getCompany());
                 fetchedUser.setDesignation(user.getDesignation());
+                fetchedUser.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                 User updatedUser = _userRepository.save(fetchedUser);
                 response.setMessage(UserConstants.USER_UPDATED);
                 response.setStatus(HttpStatus.OK);

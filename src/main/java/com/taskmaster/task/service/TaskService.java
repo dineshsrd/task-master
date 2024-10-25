@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.taskmaster.project.entity.Project;
 import com.taskmaster.project.repository.ProjectRepository;
 import com.taskmaster.project.repository.ProjectUserRoleRepository;
-import com.taskmaster.project.util.ProjectUtil;
 import com.taskmaster.shared.model.response.ResponseModel;
 import com.taskmaster.status.entity.Status;
 import com.taskmaster.status.enums.StatusEnum;
@@ -32,9 +31,6 @@ import com.taskmaster.user.model.UserDTO;
 import com.taskmaster.user.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import com.taskmaster.status.util.StatusUtil;
-import com.taskmaster.user.util.UserUtil;
 
 @Service
 public class TaskService {
@@ -111,8 +107,7 @@ public class TaskService {
             Task task = _taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
             User user = _userRepository.findById(userData.getUser_id()).orElseThrow(() -> new RuntimeException("User not found"));
             task.setAssignedTo(user);
-            Task updatedTask = _taskRepository.save(task);
-            TaskResponseDTO taskResponse = TaskUtil.getTaskResponseDTO(updatedTask);
+            TaskResponseDTO taskResponse = TaskUtil.getTaskResponseDTO(_taskRepository.save(task));
             response.setMessage("Task assigned successfully");
             response.setStatus(HttpStatus.OK);
             response.setData(taskResponse);
@@ -126,10 +121,9 @@ public class TaskService {
         ResponseModel response = new ResponseModel();
         try {
             Task task = _taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
-            Status newStatus = !status.getId().equals(null)?_statusRepository.findById(status.getId()).orElseThrow(() -> new RuntimeException("Status not found, please provide a valid status ID")):_statusRepository.findByName(status.getName()).orElseThrow(() -> new RuntimeException("Status not found, please provide valid status name"));
+            Status newStatus = status.getId() == null ? _statusRepository.findByName(status.getName()).orElseThrow(() -> new RuntimeException("Status not found, please provide valid status name")) : _statusRepository.findById(status.getId()).orElseThrow(() -> new RuntimeException("Status not found, please provide a valid status ID"));
             task.setStatus(newStatus);
-            Task updatedTask = _taskRepository.save(task);
-            TaskResponseDTO taskResponse = TaskUtil.getTaskResponseDTO(updatedTask);
+            TaskResponseDTO taskResponse = TaskUtil.getTaskResponseDTO(_taskRepository.save(task));
             response.setMessage("Task assigned successfully");
             response.setStatus(HttpStatus.OK);
             response.setData(taskResponse);
@@ -145,6 +139,40 @@ public class TaskService {
             List<Task> assignedTasks = _taskRepository.fetchTasksByUserId(userId).orElseThrow(() -> new RuntimeException("Task not found"));
             List<TaskResponseDTO> taskResponse = assignedTasks.stream().map(task -> TaskUtil.getTaskResponseDTO(task)).toList();
             response.setMessage("User tasks fetched successfully");
+            response.setStatus(HttpStatus.OK);
+            response.setData(taskResponse);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<ResponseModel> fetchTaskByStatus(StatusDTO status) {
+        ResponseModel response = new ResponseModel();
+        try {
+            Status fetchedStatus = status.getId() == null ? _statusRepository.findByName(status.getName()).orElseThrow(() -> new RuntimeException("Status not found, please provide valid status name")) : _statusRepository.findById(status.getId()).orElseThrow(() -> new RuntimeException("Status not found, please provide a valid status ID"));
+            List<Task> tasks = _taskRepository.fetchByStatus(fetchedStatus.getId()).orElseThrow(() -> new RuntimeException("Tasks not found with the given status"));
+            List<TaskResponseDTO> taskResponse = tasks.stream().map(task -> TaskUtil.getTaskResponseDTO(task)).toList();
+            response.setMessage("Tasks by status fetched successfully");
+            response.setStatus(HttpStatus.OK);
+            response.setData(taskResponse);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<ResponseModel> search(List<String> searchKeys) {
+        ResponseModel response = new ResponseModel();
+        try {
+            List<TaskResponseDTO> taskResponse = new ArrayList<>();
+            searchKeys.forEach(searchKey -> {
+                if (searchKey != null && !searchKey.isEmpty()) {
+                    List<Task> tasks = _taskRepository.search(searchKey).orElseThrow(() -> new RuntimeException("Tasks not found with the given search key"));
+                    taskResponse.addAll(tasks.stream().map(task -> TaskUtil.getTaskResponseDTO(task)).toList());
+                }
+            });
+            response.setMessage("Tasks by search key fetched successfully");
             response.setStatus(HttpStatus.OK);
             response.setData(taskResponse);
             return ResponseEntity.ok(response);

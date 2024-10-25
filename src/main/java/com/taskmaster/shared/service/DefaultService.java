@@ -112,7 +112,7 @@ public class DefaultService {
         if (_userRepository.count() == 0) {
             LOGGER.info("Adding users");
             User newUser = new User();
-            newUser.setCreatedAt(System.currentTimeMillis());
+            newUser.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             newUser.setFirstName("John");
             newUser.setLastName("Doe");
             newUser.setEmail("johndoe@gmail.com");

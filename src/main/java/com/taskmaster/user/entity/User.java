@@ -1,5 +1,6 @@
 package com.taskmaster.user.entity;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,10 +48,10 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "created_at", nullable = false)
-    private Long createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at")
-    private Long updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
