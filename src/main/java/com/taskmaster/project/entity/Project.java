@@ -5,16 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.taskmaster.project.constant.ProjectConstant;
 import com.taskmaster.task.entity.Task;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +30,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +42,11 @@ public class Project {
     @Column(name = "updated_at")
     private Long updatedAt;
 
+    @NotBlank(message = ProjectConstant.PROJECT_NAME_MANDATORY)
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotBlank(message = ProjectConstant.PROJECT_KEY_MANDATORY)
     @Column(name = "key", nullable = false)
     private String key;
 
@@ -51,11 +59,11 @@ public class Project {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Prevents recursion with ProjectUserRole
+    @OneToMany(mappedBy = "project", orphanRemoval = true)
+    @JsonManagedReference
     private Set<ProjectUserRole> projectUserRoles = new HashSet<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", orphanRemoval = true)
     @JsonManagedReference
     private List<Task> tasks = new ArrayList<>();
 }

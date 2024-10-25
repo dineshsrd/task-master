@@ -3,6 +3,8 @@ package com.taskmaster.project.entity;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taskmaster.role.entity.Role;
 import com.taskmaster.user.entity.User;
 import com.taskmaster.project.util.ProjectUserRoleId;
@@ -24,6 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "project_user_roles")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ProjectUserRole implements Serializable {
 
     @EmbeddedId

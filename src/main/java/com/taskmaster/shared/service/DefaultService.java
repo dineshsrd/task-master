@@ -1,5 +1,6 @@
 package com.taskmaster.shared.service;
 
+import java.sql.Timestamp;
 import java.util.logging.Logger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -144,10 +145,10 @@ public class DefaultService {
         if (_taskRepository.count() == 0) {
             LOGGER.info("Adding tasks");
             Task task = new Task();
-            task.setCreatedAt(System.currentTimeMillis());
+            task.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             task.setSummary("Task 1");
             task.setDescription("Task 1 description");
-            task.setDueDate(System.currentTimeMillis() + 864000L);
+            task.setDueDate(new Timestamp(System.currentTimeMillis()+8640000L));
             Project project = _projectRepository.findById(1L).orElseThrow(() -> new RuntimeException("Project not found"));
             task.setProject(project);
             Status status = _statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Status not found"));

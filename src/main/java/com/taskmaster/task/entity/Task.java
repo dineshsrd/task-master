@@ -1,9 +1,13 @@
 package com.taskmaster.task.entity;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
-import com.taskmaster.project.entity.Project;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taskmaster.comment.entity.Comment;
+import com.taskmaster.project.entity.Project;
 import com.taskmaster.status.entity.Status;
 import com.taskmaster.user.entity.User;
 
@@ -17,6 +21,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,16 +33,21 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(name = "key", unique = true, nullable = false)
+    private String key;
+
     @Column(name = "created_at", nullable = false)
-    private Long createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at")
-    private Long updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name = "summary", nullable = false)
     private String summary;
@@ -45,21 +56,21 @@ public class Task {
     private String description;
 
     @Column(name = "due_date")
-    private Long dueDate;
+    private Timestamp dueDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
@@ -68,5 +79,13 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<TaskHistory> history;
+
+    @PrePersist
+    public void setKey() {
+        // Set the key based on the persisted id
+        if (this.key == null && this.id != null) {
+            this.key = this.project.getKey() + "-" + this.id;
+        }
+    }
 
 }
