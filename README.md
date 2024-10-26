@@ -9,14 +9,9 @@ A Spring Boot-based Task Management App designed for managing projects, tasks, u
 2. [Technologies Used](#technologies-used)
 3. [Architecture Overview](#architecture-overview)
 4. [Prerequisites](#prerequisites)
-5. [Installation](#installation)
-6. [Database Setup](#database-setup)
-7. [Configuration](#configuration)
-8. [Running the Application](#running-the-application)
-9. [Database Schema](#database-schema)
-10. [API Endpoints](#api-endpoints)
-11. [Contributing](#contributing)
-12. [License](#license)
+5. [Configuration](#configuration)
+6. [Database Schema](#database-schema)
+7. [API Endpoints](#api-documentation)
 
 ---
 
