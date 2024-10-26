@@ -5,6 +5,7 @@ import com.taskmaster.status.util.StatusUtil;
 import com.taskmaster.task.entity.Task;
 import com.taskmaster.task.model.TaskResponseDTO;
 import com.taskmaster.user.util.UserUtil;
+import com.taskmaster.comment.util.CommentUtil;
 
 public class TaskUtil {
     public static TaskResponseDTO getTaskResponseDTO(Task task) {
@@ -20,6 +21,7 @@ public class TaskUtil {
         taskResponse.setAssigned_to(UserUtil.getUserDTO(task.getAssignedTo()));
         taskResponse.setStatus(StatusUtil.getStatusDto(task.getStatus()));
         taskResponse.setProject(ProjectUtil.getProjectDto(task.getProject()));
+        taskResponse.setComments(CommentUtil.getAllComments(task.getComments()));
         return taskResponse;
     }
 }

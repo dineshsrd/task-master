@@ -1,5 +1,7 @@
 package com.taskmaster.comment.entity;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +36,7 @@ public class CommentHistory {
     private String commentText;
 
     @Column(name = "created_at")
-    private Long createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "is_edited")
     private boolean isEdited;

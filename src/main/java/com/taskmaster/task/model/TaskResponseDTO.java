@@ -1,7 +1,10 @@
 package com.taskmaster.task.model;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
+import com.taskmaster.comment.model.CommentDto;
+import com.taskmaster.comment.model.CommentHistoryDTO;
 import com.taskmaster.project.model.ProjectDTO;
 import com.taskmaster.status.model.StatusDTO;
 import com.taskmaster.user.model.UserDTO;
@@ -29,4 +32,5 @@ public class TaskResponseDTO {
     private UserDTO created_by;
     private UserDTO assigned_to;
     private ProjectDTO project;
+    private Set<CommentDto> comments;
 }

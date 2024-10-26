@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taskmaster.comment.model.CommentHistoryDTO;
+import com.taskmaster.comment.service.CommentService;
 import com.taskmaster.shared.model.response.ResponseModel;
 import com.taskmaster.status.model.StatusDTO;
 import com.taskmaster.task.model.TaskRequestDTO;
@@ -27,9 +29,11 @@ import jakarta.validation.Valid;
 public class TaskController {
 
     private TaskService _taskService;
+    private CommentService _commentService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, CommentService commentService) {
         this._taskService = taskService;
+        this._commentService = commentService;
     }
 
     @PostMapping("")
@@ -112,6 +116,18 @@ public class TaskController {
             searchKeys.add(taskDto.getSummary()==null?"":taskDto.getSummary());
             searchKeys.add(taskDto.getDescription()==null?"":taskDto.getDescription());
             return _taskService.search(searchKeys);
+        } catch (Exception ex) {
+            response.setMessage(ex.getMessage());
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{taskId}/comment")
+    public ResponseEntity<ResponseModel> comment(@PathVariable Long taskId, @RequestBody CommentHistoryDTO commentDTO, HttpServletRequest request) {
+        ResponseModel response = new ResponseModel();
+        try {
+            return _commentService.addComment(taskId, commentDTO, request);
         } catch (Exception ex) {
             response.setMessage(ex.getMessage());
             response.setStatus(HttpStatus.BAD_REQUEST);

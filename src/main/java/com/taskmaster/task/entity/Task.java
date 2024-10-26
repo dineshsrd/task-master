@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taskmaster.comment.entity.Comment;
+import com.taskmaster.comment.entity.CommentHistory;
 import com.taskmaster.project.entity.Project;
 import com.taskmaster.status.entity.Status;
 import com.taskmaster.user.entity.User;
