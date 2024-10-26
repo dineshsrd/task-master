@@ -1,6 +1,4 @@
-# Task Management App
-
-![Task Management App](src/main/resources/static/images/task-app-screenshot.png)
+# Task Master - A Task Management App
 
 A Spring Boot-based Task Management App designed for managing projects, tasks, users, comments, and task history. This application supports JWT-based authentication and provides a structured REST API for efficient project and task management.
 
