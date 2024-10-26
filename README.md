@@ -113,7 +113,7 @@ Here's an overview of the main tables and their relationships in the Task Manage
     - Fields: `id`, `name`
     - Relationships: Many-to-many with **User**
 
-For a detailed schema diagram, refer to the Schema below
+For a detailed schema diagram, refer below
 
 ![DB Schema Documentation](resources/dbSchema.png)
 
