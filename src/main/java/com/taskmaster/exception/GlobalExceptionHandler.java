@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
         response.setMessage(errorDetail.getTitle());
         response.setStatus(HttpStatus.valueOf(errorDetail.getStatus()));
         response.setData(errorDetail);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorDetail.getStatus()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,5 +1,7 @@
 package com.taskmaster.project.entity;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.taskmaster.project.constant.ProjectConstant;
 import com.taskmaster.task.entity.Task;
+import com.taskmaster.user.entity.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,6 +21,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -37,10 +42,10 @@ public class Project {
     private Long id;
 
     @Column(name = "created_at", nullable = false)
-    private Long createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at")
-    private Long updatedAt;
+    private Timestamp updatedAt;
 
     @NotBlank(message = ProjectConstant.PROJECT_NAME_MANDATORY)
     @Column(name = "name", nullable = false)
@@ -58,6 +63,10 @@ public class Project {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
     @OneToMany(mappedBy = "project", orphanRemoval = true)
     @JsonManagedReference

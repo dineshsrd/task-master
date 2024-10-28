@@ -1,5 +1,8 @@
 package com.taskmaster.user.util;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.taskmaster.user.entity.User;
 import com.taskmaster.user.model.UserDTO;
 
@@ -11,5 +14,13 @@ public class UserUtil {
         userDTO.setLast_name(user.getLastName());
         userDTO.setEmail(user.getEmail());
         return userDTO;
+    }
+
+    public static User getUserFromAuth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        return (User) authentication.getPrincipal();
     }
 }

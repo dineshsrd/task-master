@@ -50,9 +50,9 @@ public class DefaultService {
     @PostConstruct
     public void initDefaultData() {
         addRoles();
+        addUsers();
         addProjects();
         addStatuses();
-        addUsers();
         addUsersToProject();
     }
 
@@ -83,31 +83,6 @@ public class DefaultService {
     }
 
     @Transactional
-    public void addProjects() {
-        if (_projectRepository.count() == 0) {
-            Project pro1 = new Project();
-            pro1.setName("Project 1");
-            pro1.setKey("PROJ1");
-            pro1.setDescription("Project 1 description");
-            pro1.setCreatedAt(System.currentTimeMillis());
-            pro1.setIsActive(true);
-            _projectRepository.save(pro1);
-
-            pro1 = new Project();
-            pro1.setName("Project 2");
-            pro1.setKey("PROJ2");
-            pro1.setDescription("Project 2 description");
-            pro1.setCreatedAt(System.currentTimeMillis());
-            pro1.setIsActive(true);
-            _projectRepository.save(pro1);
-
-            LOGGER.info("Projects added successfully");
-        } else {
-            LOGGER.info("Projects already exist");
-        }
-    }
-
-    @Transactional
     public void addUsers() {
         if (_userRepository.count() == 0) {
             LOGGER.info("Adding users");
@@ -122,6 +97,35 @@ public class DefaultService {
             LOGGER.info("Users added successfully");
         }
     }
+
+    @Transactional
+    public void addProjects() {
+        if (_projectRepository.count() == 0) {
+            Project pro1 = new Project();
+            pro1.setName("Project 1");
+            pro1.setKey("PROJ1");
+            pro1.setDescription("Project 1 description");
+            pro1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            pro1.setIsActive(true);
+            pro1.setCreatedBy(_userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")));
+            _projectRepository.save(pro1);
+
+            pro1 = new Project();
+            pro1.setName("Project 2");
+            pro1.setKey("PROJ2");
+            pro1.setDescription("Project 2 description");
+            pro1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            pro1.setIsActive(true);
+            pro1.setCreatedBy(_userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")));
+            _projectRepository.save(pro1);
+
+            LOGGER.info("Projects added successfully");
+        } else {
+            LOGGER.info("Projects already exist");
+        }
+    }
+
+
 
     @Transactional
     public void addUsersToProject() {

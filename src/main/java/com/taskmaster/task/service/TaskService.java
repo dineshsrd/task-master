@@ -54,6 +54,10 @@ public class TaskService {
         try {
             Project project = _projectRepository.findById(taskModel.getProject_id()).orElseThrow(() -> new RuntimeException("Project not found"));
 
+            if (!project.getIsActive()) {
+                throw new RuntimeException("Project is not active, you cannot create task in this project");
+            }
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             Optional<User> userData = _userRepository.findByEmail(userName);
